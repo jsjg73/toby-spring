@@ -1,7 +1,6 @@
 package springbook.user.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,13 +8,13 @@ import java.sql.SQLException;
 import springbook.user.domain.User;
 
 public class UserDao {
-	private SimpleConnectionMaker simpeConnectionMaker;
+	private ConnectionMaker connectionMaker; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
-	public UserDao(SimpleConnectionMaker simpeConnectionMaker) {
-		this.simpeConnectionMaker = simpeConnectionMaker;
+	public UserDao() {
+		this.connectionMaker = new DConnectionMaker();
 	}
 	public void add(User user) throws ClassNotFoundException, SQLException {
-		Connection c = simpeConnectionMaker.makeNewconnection();
+		Connection c = connectionMaker.makeConnection();
 		
 		PreparedStatement ps = c.prepareStatement(
 				"insert into users(id, name, password) values(?,?,?)");
@@ -28,7 +27,7 @@ public class UserDao {
 		c.close();
 	}
 	public User get(String id)throws ClassNotFoundException, SQLException{
-		Connection c = simpeConnectionMaker.makeNewconnection();
+		Connection c = connectionMaker.makeConnection();
 		
 		PreparedStatement ps = c.prepareStatement(
 				"select * from users where id = ?");
