@@ -8,9 +8,14 @@ import java.sql.SQLException;
 
 import springbook.user.domain.User;
 
-public abstract class UserDao {
+public class UserDao {
+	private SimpleConnectionMaker simpeConnectionMaker;
+	
+	public UserDao(SimpleConnectionMaker simpeConnectionMaker) {
+		this.simpeConnectionMaker = simpeConnectionMaker;
+	}
 	public void add(User user) throws ClassNotFoundException, SQLException {
-		Connection c = getConnection();
+		Connection c = simpeConnectionMaker.makeNewconnection();
 		
 		PreparedStatement ps = c.prepareStatement(
 				"insert into users(id, name, password) values(?,?,?)");
@@ -23,7 +28,7 @@ public abstract class UserDao {
 		c.close();
 	}
 	public User get(String id)throws ClassNotFoundException, SQLException{
-		Connection c = getConnection();
+		Connection c = simpeConnectionMaker.makeNewconnection();
 		
 		PreparedStatement ps = c.prepareStatement(
 				"select * from users where id = ?");
@@ -42,10 +47,4 @@ public abstract class UserDao {
 		
 		return user;
 	}
-	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
-//	{
-//		Class.forName("org.h2.Driver");
-//		Connection c = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-//		return c;
-//	}
 }
