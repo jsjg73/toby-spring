@@ -11,6 +11,11 @@
 			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
 			<url>http://repository.springsource.com/maven/bundles/release</url>
 		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -18,10 +23,9 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.181</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.core</artifactId>
+			<artifactId>org.springframework.context</artifactId>
 			<version>3.0.7.RELEASE</version>
 		</dependency>
 
