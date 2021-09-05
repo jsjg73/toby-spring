@@ -28,6 +28,11 @@
 			<artifactId>org.springframework.context</artifactId>
 			<version>3.0.7.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.jdbc</artifactId>
+			<version>3.0.7.RELEASE</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.cglib/com.springsource.net.sf.cglib -->
 		<dependency>
 			<groupId>net.sourceforge.cglib</groupId>
