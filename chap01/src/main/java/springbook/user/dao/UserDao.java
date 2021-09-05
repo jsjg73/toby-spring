@@ -5,15 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import springbook.user.domain.User;
 
 public class UserDao {
-	private ConnectionMaker connectionMaker; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
+	private DataSource dataSource; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
-	public void setConnectionMaker(ConnectionMaker connectionMaker) {
-		this.connectionMaker=connectionMaker;
+	public void setConnectionMaker(DataSource dataSource) {
+		this.dataSource=dataSource;
 	}
 	
 //	public UserDao(ConnectionMaker connectionMaker) {
@@ -43,7 +45,7 @@ public class UserDao {
 	
 	
 	public void add(User user) throws ClassNotFoundException, SQLException {
-		Connection c = connectionMaker.makeConnection();
+		Connection c = dataSource.getConnection();
 		
 		PreparedStatement ps = c.prepareStatement(
 				"insert into users(id, name, password) values(?,?,?)");
@@ -56,7 +58,7 @@ public class UserDao {
 		c.close();
 	}
 	public User get(String id)throws ClassNotFoundException, SQLException{
-		Connection c = connectionMaker.makeConnection();
+		Connection c = dataSource.getConnection();
 		
 		PreparedStatement ps = c.prepareStatement(
 				"select * from users where id = ?");
