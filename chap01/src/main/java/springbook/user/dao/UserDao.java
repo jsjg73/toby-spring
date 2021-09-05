@@ -12,12 +12,15 @@ import springbook.user.domain.User;
 public class UserDao {
 	private ConnectionMaker connectionMaker; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
-	public UserDao(ConnectionMaker connectionMaker) {
-//		this.connectionMaker = connectionMaker;
-		AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(DaoFactory.class);
-		this.connectionMaker=context.getBean("connectionMaker", ConnectionMaker.class);
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
+		this.connectionMaker=connectionMaker;
 	}
+	
+//	public UserDao(ConnectionMaker connectionMaker) {
+//		AnnotationConfigApplicationContext context =
+//				new AnnotationConfigApplicationContext(DaoFactory.class);
+//		this.connectionMaker=context.getBean("connectionMaker", ConnectionMaker.class);
+//	}
 	
 	/*
 	1.7.3 의존관계 검색과 주입
