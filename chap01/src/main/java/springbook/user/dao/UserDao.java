@@ -5,13 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import springbook.user.domain.User;
 
 public class UserDao {
 	private ConnectionMaker connectionMaker; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
 	public UserDao(ConnectionMaker connectionMaker) {
-		this.connectionMaker = connectionMaker;
+//		this.connectionMaker = connectionMaker;
+		AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(DaoFactory.class);
+		this.connectionMaker=context.getBean("connectionMaker", ConnectionMaker.class);
 	}
 	
 	/*
@@ -22,6 +27,18 @@ public class UserDao {
 		this.connectionMaker = daoFactory.connectionMaker();
 	}
 	 */
+
+	/*
+	1.7.3 의존관계 검색과 주입
+	리스트 1-27 의존관계 검색을 이용하는 UserDao생성자
+	public UserDao(){
+		AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(DaoFactory.class);
+		this.connectionMaker=context.getBean("connectionMaker", ConnectionMaker.class);
+	}
+	 */
+	
+	
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Connection c = connectionMaker.makeConnection();
 		
