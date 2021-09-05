@@ -13,6 +13,15 @@ public class UserDao {
 	public UserDao(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
 	}
+	
+	/*
+	1.7.3 의존관계 검색과 주입
+	리스트 1-26 DaoFactory를 이용하는 생성자
+	public UserDao(){
+		DaoFacotry daoFactory = new DaoFactory();
+		this.connectionMaker = daoFactory.connectionMaker();
+	}
+	 */
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Connection c = connectionMaker.makeConnection();
 		
