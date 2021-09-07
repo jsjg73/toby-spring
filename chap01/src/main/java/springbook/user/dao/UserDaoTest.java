@@ -16,12 +16,12 @@ public class UserDaoTest {
 	public void addAndGet() throws SQLException{
 		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 		UserDao dao = context.getBean("userDao", UserDao.class);
+		dao.delete();
 		
 		User user = new User();
 		user.setId("jsjg73");
 		user.setName("재성");
 		user.setPassword("123");
-		
 		dao.add(user);
 		
 		System.out.println(user.getId()+" 등록 성공");
