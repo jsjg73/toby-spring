@@ -14,7 +14,7 @@ import springbook.user.domain.User;
 public class UserDao {
 	private DataSource dataSource; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
-	public void setConnectionMaker(DataSource dataSource) {
+	public void setDataSource(DataSource dataSource) {
 		this.dataSource=dataSource;
 	}
 	

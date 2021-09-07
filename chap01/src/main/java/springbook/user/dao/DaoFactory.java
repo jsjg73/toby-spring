@@ -14,13 +14,6 @@ public class DaoFactory {
 		dao.setConnectionMaker(dataSource());
 		return dao;
 	}
-	public AccountDao accountDao() {
-		return new AccountDao(connectionMaker());
-	}
-	
-	public MessageDao messageDao() {
-		return new MessageDao(connectionMaker());
-	}
 	@Bean
 	public DataSource dataSource() {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
