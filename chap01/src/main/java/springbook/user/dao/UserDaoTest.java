@@ -20,8 +20,6 @@ import springbook.user.domain.User;
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserDaoTest {
 	@Autowired
-	private ApplicationContext context;
-	
 	private UserDao dao;
 	private User user1;
 	private User user2;
@@ -29,7 +27,6 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp() {
-		dao = context.getBean("userDao", UserDao.class);
 		user1 = new User("jsjg73", "재성", "123");
 		user2 = new User("kjs9373", "김재성", "123");
 		user3 = new User("real", "희동이", "345");
