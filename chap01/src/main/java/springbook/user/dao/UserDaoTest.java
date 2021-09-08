@@ -20,7 +20,7 @@ public class UserDaoTest {
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));
 		
-		User user = new User("jsjg73", "Àç¼º", "123");
+		User user = new User("jsjg73", "ì¬ì„±", "123");
 		
 		dao.add(user);
 		assertThat(dao.getCount(), is(1));
@@ -35,9 +35,9 @@ public class UserDaoTest {
 		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 		
 		UserDao dao = context.getBean("userDao", UserDao.class);
-		User user1 = new User("super", "±æµ¿ÀÌ", "123");
-		User user2 = new User("son", "µÑ¸®", "234");
-		User user3 = new User("real", "Èñµ¿ÀÌ", "345");
+		User user1 = new User("super", "ê¸¸ë™ì´", "123");
+		User user2 = new User("son", "ë‘˜ë¦¬", "234");
+		User user3 = new User("real", "í¬ë™ì´", "345");
 		
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));

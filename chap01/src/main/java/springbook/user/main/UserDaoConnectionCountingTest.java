@@ -17,18 +17,18 @@ public class UserDaoConnectionCountingTest {
 		
 		User user = new User();
 		user.setId("jsjg73");
-		user.setName("犁己");
+		user.setName("鞛劚");
 		user.setPassword("123");
 		
 		dao.add(user);
 		
-		System.out.println(user.getId()+" 殿废 己傍");
+		System.out.println(user.getId()+" 霌彪 靹标车");
 		
 		User user2 = new User();
 		user2=dao.get("jsjg73");
 		System.out.println(user2.getName());
 		System.out.println(user2.getPassword());
-		System.out.println(user2.getId()+" 炼雀 己傍");
+		System.out.println(user2.getId()+" 臁绊殞 靹标车");
 		
 		CountingConnectionMaker ccm = context.getBean("connectionMaker",CountingConnectionMaker.class);
 		System.out.println("Connection counter : "+ccm.getCounter());

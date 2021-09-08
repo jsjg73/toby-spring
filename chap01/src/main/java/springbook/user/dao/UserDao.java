@@ -12,7 +12,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import springbook.user.domain.User;
 
 public class UserDao {
-	private DataSource dataSource; // ÀÎÅÍÆäÀÌ½º¸¦ ÅëÇØ ¿ÀºêÁ§Æ®¿¡ Á¢±ÙÇÏ¹Ç·Î ±¸Ã¼ÀûÀÎ Å¬·¡½º Á¤º¸¸¦ ¾Ë ÇÊ¿ä°¡ ¾ø´Ù.
+	private DataSource dataSource; // ì¸í„°í˜ì´ìŠ¤ë¥¼ í†µí•´ ì˜¤ë¸Œì íŠ¸ì— ì ‘ê·¼í•˜ë¯€ë¡œ êµ¬ì²´ì ì¸ í´ë˜ìŠ¤ ì •ë³´ë¥¼ ì•Œ í•„ìš”ê°€ ì—†ë‹¤.
 	
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource=dataSource;
@@ -25,8 +25,8 @@ public class UserDao {
 //	}
 	
 	/*
-	1.7.3 ÀÇÁ¸°ü°è °Ë»ö°ú ÁÖÀÔ
-	¸®½ºÆ® 1-26 DaoFactory¸¦ ÀÌ¿ëÇÏ´Â »ı¼ºÀÚ
+	1.7.3 ì˜ì¡´ê´€ê³„ ê²€ìƒ‰ê³¼ ì£¼ì…
+	ë¦¬ìŠ¤íŠ¸ 1-26 DaoFactoryë¥¼ ì´ìš©í•˜ëŠ” ìƒì„±ì
 	public UserDao(){
 		DaoFacotry daoFactory = new DaoFactory();
 		this.connectionMaker = daoFactory.connectionMaker();
@@ -34,8 +34,8 @@ public class UserDao {
 	 */
 
 	/*
-	1.7.3 ÀÇÁ¸°ü°è °Ë»ö°ú ÁÖÀÔ
-	¸®½ºÆ® 1-27 ÀÇÁ¸°ü°è °Ë»öÀ» ÀÌ¿ëÇÏ´Â UserDao»ı¼ºÀÚ
+	1.7.3 ì˜ì¡´ê´€ê³„ ê²€ìƒ‰ê³¼ ì£¼ì…
+	ë¦¬ìŠ¤íŠ¸ 1-27 ì˜ì¡´ê´€ê³„ ê²€ìƒ‰ì„ ì´ìš©í•˜ëŠ” UserDaoìƒì„±ì
 	public UserDao(){
 		AnnotationConfigApplicationContext context =
 				new AnnotationConfigApplicationContext(DaoFactory.class);
