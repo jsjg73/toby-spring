@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -13,11 +14,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;
 
 public class UserDaoTest {
+	private UserDao dao;
 	
+	@Before
+	public void setUp() {
+		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+		dao = context.getBean("userDao", UserDao.class);	
+	}
 	@Test
 	public void addAndGet() throws SQLException{
-		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-		UserDao dao = context.getBean("userDao", UserDao.class);
 		
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));
@@ -40,9 +45,6 @@ public class UserDaoTest {
 	}
 	@Test
 	public void count() throws SQLException{
-		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-		
-		UserDao dao = context.getBean("userDao", UserDao.class);
 		User user1 = new User("super", "길동이", "123");
 		User user2 = new User("son", "둘리", "234");
 		User user3 = new User("real", "희동이", "345");
@@ -63,9 +65,6 @@ public class UserDaoTest {
 	// 리스트2-13 get() 메소드의 예외상황에 대한 테스트
 	@Test(expected=EmptyResultDataAccessException.class) // 발생할 것으로 기대하는 예외 클래스
 	public void getUserFailure() throws SQLException{
-		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-		
-		UserDao dao = context.getBean("userDao", UserDao.class);
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));
 		
