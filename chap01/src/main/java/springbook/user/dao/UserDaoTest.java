@@ -15,20 +15,23 @@ import springbook.user.domain.User;
 
 public class UserDaoTest {
 	private UserDao dao;
+	private User user1;
+	private User user2;
+	private User user3;
 	
 	@Before
 	public void setUp() {
 		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-		dao = context.getBean("userDao", UserDao.class);	
+		dao = context.getBean("userDao", UserDao.class);
+		user1 = new User("jsjg73", "재성", "123");
+		user2 = new User("kjs9373", "김재성", "123");
+		user3 = new User("real", "희동이", "345");
 	}
 	@Test
 	public void addAndGet() throws SQLException{
 		
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));
-		
-		User user1 = new User("jsjg73", "재성", "123");
-		User user2 = new User("kjs9373", "김재성", "123");
 		
 		dao.add(user1);
 		dao.add(user2);
@@ -45,9 +48,6 @@ public class UserDaoTest {
 	}
 	@Test
 	public void count() throws SQLException{
-		User user1 = new User("super", "길동이", "123");
-		User user2 = new User("son", "둘리", "234");
-		User user3 = new User("real", "희동이", "345");
 		
 		dao.deleteAll();
 		assertThat(dao.getCount(), is(0));
