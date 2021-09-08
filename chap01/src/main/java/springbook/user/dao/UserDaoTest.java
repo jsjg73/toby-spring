@@ -5,21 +5,16 @@ import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import springbook.user.domain.User;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserDaoTest {
-	@Autowired
 	private UserDao dao;
 	private User user1;
 	private User user2;
@@ -30,6 +25,10 @@ public class UserDaoTest {
 		user1 = new User("jsjg73", "재성", "123");
 		user2 = new User("kjs9373", "김재성", "123");
 		user3 = new User("real", "희동이", "345");
+		dao = new UserDao();
+		DataSource dataSource = new SingleConnectionDataSource(
+				"jdbc:h2:tcp://localhost/~/test","sa","",true);
+		dao.setDataSource(dataSource);
 	}
 	@Test
 	public void addAndGet() throws SQLException{
