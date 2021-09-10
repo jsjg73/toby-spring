@@ -13,10 +13,13 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import springbook.user.dao.UserDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/junit.xml")
@@ -24,6 +27,10 @@ public class JUnitTest {
 	@Autowired
 	ApplicationContext context;
 	
+	@Autowired
+	UserDao dao;
+	
+	static UserDao userDao;
 	static Set<JUnitTest> testObjects = new HashSet<JUnitTest>();
 	static ApplicationContext contextObject = null;
 	@Test
@@ -50,5 +57,24 @@ public class JUnitTest {
 		assertThat(contextObject, 
 				either(is(nullValue())).or(is(this.context)));
 		contextObject = this.context;
+	}
+	
+	@Test
+	public void singletonTest1() {
+		assertTrue(dao!=null);
+		assertThat(userDao, either(nullValue()).or(is(dao)));
+		userDao = dao;
+	}
+	
+	@Test
+	public void singletonTest2() {
+		assertTrue(dao!=null);
+		assertThat(userDao, either(nullValue()).or(is(dao)));
+		userDao = dao;
+	}
+	
+	@Test(expected = NoSuchBeanDefinitionException.class)
+	public void wrongBeanName() {
+		context.getBean("unkown", UserDao.class);
 	}
 }
