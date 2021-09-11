@@ -1,8 +1,11 @@
 package springbook.learningtest.junit;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -20,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import springbook.user.dao.UserDao;
+import springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/junit.xml")
@@ -76,5 +80,23 @@ public class JUnitTest {
 	@Test(expected = NoSuchBeanDefinitionException.class)
 	public void wrongBeanName() {
 		context.getBean("unkown", UserDao.class);
+	}
+	
+	@Test
+	public void DIAndDL() {
+		assertThat(dao, sameInstance(context.getBean("userDao", UserDao.class)));
+	}
+	
+	@Test
+	public void xmlPropertyDI() {
+		User user = context.getBean("user", User.class);
+		assertThat(user, notNullValue());
+		assertThat(user.getId(), equalTo("jsjg73"));
+	}
+	@Test
+	public void xmlPropertyDI_Fail() {
+		User user = context.getBean("user", User.class);
+		assertThat(user, notNullValue());
+		assertThat(user.getId(), equalTo("jsjg7"));
 	}
 }
