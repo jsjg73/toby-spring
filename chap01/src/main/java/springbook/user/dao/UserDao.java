@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import springbook.user.domain.User;
 
-public class UserDao {
+public abstract class UserDao {
 	private DataSource dataSource; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
 	public void setDataSource(DataSource dataSource) {
@@ -109,11 +109,12 @@ public class UserDao {
 		
 	}
 	
-	private PreparedStatement makeStatement(Connection c) throws SQLException {
-		PreparedStatement ps ;
-		ps = c.prepareStatement("delete from users");
-		return ps;
-	}
+	abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
+//	{
+//		PreparedStatement ps ;
+//		ps = c.prepareStatement("delete from users");
+//		return ps;
+//	}
 
 	public int getCount() throws SQLException{
 		Connection c = null;
