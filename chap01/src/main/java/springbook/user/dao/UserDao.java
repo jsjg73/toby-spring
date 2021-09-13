@@ -87,7 +87,8 @@ public abstract class UserDao {
 		try {
 			c= dataSource.getConnection();
 			
-			ps = makeStatement(c);
+			StatementStrategy strategy = new DeleteAllStatement();
+			ps = strategy.makePreparedStatment(c);
 			
 			ps.executeUpdate();
 		}catch (SQLException e) {
@@ -109,13 +110,6 @@ public abstract class UserDao {
 		
 	}
 	
-	abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
-//	{
-//		PreparedStatement ps ;
-//		ps = c.prepareStatement("delete from users");
-//		return ps;
-//	}
-
 	public int getCount() throws SQLException{
 		Connection c = null;
 		PreparedStatement ps = null;
