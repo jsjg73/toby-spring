@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import springbook.user.domain.User;
 
-public abstract class UserDao {
+public class UserDao {
 	private DataSource dataSource; // 인터페이스를 통해 오브젝트에 접근하므로 구체적인 클래스 정보를 알 필요가 없다.
 	
 	public void setDataSource(DataSource dataSource) {
@@ -82,32 +82,8 @@ public abstract class UserDao {
 	}
 	
 	public void deleteAll() throws SQLException {
-		Connection c = null;
-		PreparedStatement ps = null;
-		try {
-			c= dataSource.getConnection();
-			
-			StatementStrategy strategy = new DeleteAllStatement();
-			ps = strategy.makePreparedStatment(c);
-			
-			ps.executeUpdate();
-		}catch (SQLException e) {
-			throw e;
-		}finally {
-			if(ps!=null) {
-				try {
-					ps.close();
-				} catch (SQLException e) {
-				}
-			}
-			if(c!=null) {
-				try {
-					c.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		
+		StatementStrategy st = new DeleteAllStatement();
+		jdbcContextWithStatementStrategy(st);
 	}
 	
 	public int getCount() throws SQLException{
@@ -146,5 +122,32 @@ public abstract class UserDao {
 			}
 		}
 		
+	}
+	
+	public void jdbcContextWithStatementStrategy(StatementStrategy stmt)throws SQLException{
+		Connection c = null;
+		PreparedStatement ps = null;
+		try {
+			c= dataSource.getConnection();
+			
+			ps = stmt.makePreparedStatment(c);
+			
+			ps.executeUpdate();
+		}catch (SQLException e) {
+			throw e;
+		}finally {
+			if(ps!=null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+				}
+			}
+			if(c!=null) {
+				try {
+					c.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 	}
 }

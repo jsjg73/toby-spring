@@ -97,6 +97,6 @@ public class JUnitTest {
 	public void xmlPropertyDI_Fail() {
 		User user = context.getBean("user", User.class);
 		assertThat(user, notNullValue());
-		assertThat(user.getId(), equalTo("jsjg7"));
+		assertThat(user.getId(), not(equalTo("jsjg7")));
 	}
 }
