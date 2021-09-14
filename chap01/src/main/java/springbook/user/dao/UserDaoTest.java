@@ -29,6 +29,10 @@ public class UserDaoTest {
 		DataSource dataSource = new SingleConnectionDataSource(
 				"jdbc:h2:tcp://localhost/~/test","sa","",true);
 		dao.setDataSource(dataSource);
+		JdbcContext jdbcContext = new JdbcContext();
+		jdbcContext.setDataSource(dataSource);
+		dao.setJdbcContext(jdbcContext);
+		
 	}
 	@Test
 	public void addAndGet() throws SQLException{
