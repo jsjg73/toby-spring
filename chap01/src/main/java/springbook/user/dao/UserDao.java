@@ -17,29 +17,15 @@ public class UserDao {
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-
-//	public UserDao(ConnectionMaker connectionMaker) {
-//		AnnotationConfigApplicationContext context =
-//				new AnnotationConfigApplicationContext(DaoFactory.class);
-//		this.connectionMaker=context.getBean("connectionMaker", ConnectionMaker.class);
-//	}
-
-	/*
-	 * 1.7.3 의존관계 검색과 주입 리스트 1-26 DaoFactory를 이용하는 생성자 public UserDao(){ DaoFacotry
-	 * daoFactory = new DaoFactory(); this.connectionMaker =
-	 * daoFactory.connectionMaker(); }
-	 */
-
-	/*
-	 * 1.7.3 의존관계 검색과 주입 리스트 1-27 의존관계 검색을 이용하는 UserDao생성자 public UserDao(){
-	 * AnnotationConfigApplicationContext context = new
-	 * AnnotationConfigApplicationContext(DaoFactory.class);
-	 * this.connectionMaker=context.getBean("connectionMaker",
-	 * ConnectionMaker.class); }
-	 */
+	
+	private JdbcContext jdbcContext;
+	
+	public void setJdbcContext(JdbcContext jdbcContext) {
+		this.jdbcContext = jdbcContext;
+	}
 
 	public void add(final User user) throws SQLException {
-		jdbcContextWithStatementStrategy(new StatementStrategy() {
+		this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 			public PreparedStatement makePreparedStatment(Connection c) throws SQLException {
 				PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
 				ps.setString(1, user.getId());
@@ -76,7 +62,7 @@ public class UserDao {
 	}
 
 	public void deleteAll() throws SQLException {
-		jdbcContextWithStatementStrategy(
+		this.jdbcContext.workWithStatementStrategy(
 			new StatementStrategy() {
 				public PreparedStatement makePreparedStatment(Connection c) throws SQLException {
 					PreparedStatement ps = c.prepareStatement("delete from users");

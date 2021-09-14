@@ -26,7 +26,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/junit.xml")
+@ContextConfiguration(locations = "/test-applicationContext.xml")
 public class JUnitTest {
 	@Autowired
 	ApplicationContext context;
