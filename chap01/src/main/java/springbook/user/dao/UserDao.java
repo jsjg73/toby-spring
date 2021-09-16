@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 
 import springbook.user.domain.User;
 
@@ -30,27 +31,17 @@ public class UserDao {
 	}
 
 	public User get(String id) throws SQLException {
-		Connection c = dataSource.getConnection();
-
-		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
-		ps.setString(1, id);
-
-		ResultSet rs = ps.executeQuery();
-		User user = null;
-		if (rs.next()) {
-			user = new User();
-			user.setId(rs.getString("id"));
-			user.setName(rs.getString("name"));
-			user.setPassword(rs.getString("password"));
-		}
-
-		rs.close();
-		ps.close();
-		c.close();
-
-		if (user == null)
-			throw new EmptyResultDataAccessException(1);
-		return user;
+		return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+				new Object[] {id},
+				new RowMapper<User>() {
+					public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+						User user = new User();
+						user.setId(rs.getString("id"));
+						user.setName(rs.getString("name"));
+						user.setPassword(rs.getString("password"));
+						return user;
+					}
+				});
 	}
 
 	public void deleteAll() throws SQLException {
