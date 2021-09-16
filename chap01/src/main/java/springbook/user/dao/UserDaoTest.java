@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -75,5 +76,40 @@ public class UserDaoTest {
 		//예외가 발생하지 않으면 테스트가 실패한다.
 		dao.get("unknown_id");
 		
+	}
+	
+	@Test
+	public void getAll() {
+//		user1 = new User("jsjg73", "재성", "123");
+//		user2 = new User("kjs9373", "김재성", "123");
+//		user3 = new User("real", "희동이", "345");
+		dao.deleteAll();
+		
+		List<User> users0= dao.getAll();
+		assertThat(users0.size(), is(0));
+		
+		dao.add(user1);
+		List<User> users1 = dao.getAll();
+		assertThat(users1.size(), is(1));
+		checkSameUser(user1, users1.get(0));
+		
+		dao.add(user2);
+		List<User> users2 = dao.getAll();
+		assertThat(users2.size(), is(2));
+		checkSameUser(user1, users2.get(0));
+		checkSameUser(user2, users2.get(1));
+		
+		dao.add(user3);
+		List<User> users3 = dao.getAll();
+		assertThat(users3.size(), is(3));
+		checkSameUser(user1, users3.get(0));
+		checkSameUser(user2, users3.get(1));
+		checkSameUser(user3, users3.get(2));
+		
+	}
+	private void checkSameUser(User user1, User user2) {
+		assertThat(user1.getId(), is(user2.getId()));
+		assertThat(user1.getName(), is(user2.getName()));
+		assertThat(user1.getPassword(), is(user2.getPassword()));
 	}
 }
