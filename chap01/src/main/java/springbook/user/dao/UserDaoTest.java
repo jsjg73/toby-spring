@@ -16,6 +16,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,6 +27,8 @@ import springbook.user.domain.User;
 public class UserDaoTest {
 	@Autowired
 	private UserDao dao;
+	@Autowired
+	private DataSource dataSource;
 	private User user1;
 	private User user2;
 	private User user3;
@@ -124,5 +127,20 @@ public class UserDaoTest {
 
 		dao.add(user1);
 		dao.add(user1);
+	}
+	
+	@Test
+	public void sqlExceptionTranslate() {
+		dao.deleteAll();
+		try {
+			dao.add(user1);
+			dao.add(user1);
+		}catch(DuplicateKeyException ex) {
+			SQLException sqlEx = (SQLException)ex.getRootCause();
+			SQLErrorCodeSQLExceptionTranslator set =
+					new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+			assertThat(set.translate(null, null, sqlEx), is(DuplicateKeyException.class));
+		}
+		
 	}
 }
