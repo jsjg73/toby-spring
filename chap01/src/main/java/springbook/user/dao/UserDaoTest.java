@@ -145,4 +145,21 @@ public class UserDaoTest {
 		}
 		
 	}
+	
+	@Test
+	public void update() {
+		dao.deleteAll();
+		
+		dao.add(user1);
+		
+		user1.setName("수정된 이름");
+		user1.setPassword("수정된 비밀번호");
+		user1.setLevel(Level.GOLD);
+		user1.setLogin(1000);
+		user1.setRecommend(999);
+		dao.update(user1);
+		
+		User user1update = dao.get(user1.getId());
+		checkSameUser(user1, user1update);
+	}
 }
