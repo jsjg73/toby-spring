@@ -20,6 +20,7 @@ import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,9 +36,9 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp() {
-		user1 = new User("jsjg73", "재성", "123");
-		user2 = new User("kjs9373", "김재성", "123");
-		user3 = new User("real", "희동이", "345");
+		user1 = new User("jsjg73", "재성", "123", Level.BASIC, 1, 0);
+		user2 = new User("kjs9373", "김재성", "123", Level.SILVER, 55, 10);
+		user3 = new User("real", "희동이", "345", Level.GOLD, 100, 40);
 	}
 	@Test
 	public void addAndGet() throws SQLException{
@@ -50,12 +51,10 @@ public class UserDaoTest {
 		assertThat(dao.getCount(), is(2));
 		
 		User userget1 = dao.get(user1.getId());
-		assertThat(userget1.getName(), is(user1.getName()));
-		assertThat(userget1.getPassword(), is(user1.getPassword()));
+		checkSameUser(userget1,  user1);
 		
 		User userget2 = dao.get(user2.getId());
-		assertThat(userget2.getName(), is(user2.getName()));
-		assertThat(userget2.getPassword(), is(user2.getPassword()));
+		checkSameUser(userget2,  user2);
 
 	}
 	@Test
@@ -119,6 +118,9 @@ public class UserDaoTest {
 		assertThat(user1.getId(), is(user2.getId()));
 		assertThat(user1.getName(), is(user2.getName()));
 		assertThat(user1.getPassword(), is(user2.getPassword()));
+		assertThat(user1.getLevel(), is(user2.getLevel()));
+		assertThat(user1.getLogin(), is(user2.getLogin()));
+		assertThat(user1.getRecommend(), is(user2.getRecommend()));
 	}
 	
 	@Test(expected = DuplicateKeyException.class)
