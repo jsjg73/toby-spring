@@ -151,6 +151,7 @@ public class UserDaoTest {
 		dao.deleteAll();
 		
 		dao.add(user1);
+		dao.add(user2);
 		
 		user1.setName("수정된 이름");
 		user1.setPassword("수정된 비밀번호");
@@ -161,5 +162,7 @@ public class UserDaoTest {
 		
 		User user1update = dao.get(user1.getId());
 		checkSameUser(user1, user1update);
+		User user2same = dao.get(user2.getId());
+		checkSameUser(user2, user2same);	
 	}
 }
