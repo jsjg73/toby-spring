@@ -61,4 +61,16 @@ public class User {
 		this.password = password;
 	}
 	
+	public void upgradeLevel() {
+		if(level==null)
+			throw new IllegalStateException("현재 Level이 null이면 업그레이드가 불가능합니다");
+			
+		Level nextLevel = level.nextLevel();
+		if(nextLevel==null) {
+			throw new IllegalStateException(this.level+"은 업그레이드가 불가능합니다");
+		}
+		else {
+			this.level=nextLevel;
+		}
+	}
 }
