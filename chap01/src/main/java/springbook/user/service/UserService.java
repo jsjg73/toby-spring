@@ -2,6 +2,8 @@ package springbook.user.service;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
@@ -24,7 +26,9 @@ public class UserService {
 			}
 		}
 	}
-	private void upgradeLevel(User user) {
+	
+	// 상속을 통해 오버라이딩 가능하도록 변경
+	protected void upgradeLevel(User user) {
 		user.upgradeLevel();
 		userDao.update(user);
 	}
@@ -46,4 +50,17 @@ public class UserService {
 		}
 		userDao.add(user);
 	}
+	
+	static class TestUserService extends UserService{
+		private String id;
+		public TestUserService(String id) {
+			this.id= id;
+		}
+		protected void upgradeLevel(User user) {
+			if(user.getId().equals(this.id)) throw new TestUserServiceException();
+			super.upgradeLevel(user);
+		}
+	}
+	static class TestUserServiceException extends RuntimeException{}
+	
 }
