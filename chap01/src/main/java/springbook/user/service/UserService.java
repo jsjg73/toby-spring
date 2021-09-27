@@ -1,8 +1,14 @@
 package springbook.user.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.junit.Test;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
@@ -13,17 +19,36 @@ public class UserService {
 	public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 	
 	UserDao userDao;
+	private DataSource dataSource;
 	
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 	
-	public void upgradeLevels() {
-		List<User> users = userDao.getAll();
-		for(User user : users) {
-			if(canUpgradeLevel(user)) {
-				upgradeLevel(user);
+	//트랜잭션을 조정하고 싶은 영역.
+	public void upgradeLevels() throws Exception {
+		TransactionSynchronizationManager.initSynchronization();
+		Connection c = DataSourceUtils.getConnection(dataSource);
+		c.setAutoCommit(false);
+		try {
+			List<User> users = userDao.getAll();
+			for(User user : users) {
+				if(canUpgradeLevel(user)) {
+					upgradeLevel(user);
+				}
 			}
+			c.commit();
+		} catch (Exception e) {
+			c.rollback();
+			throw e;
+		}finally {
+			DataSourceUtils.releaseConnection(c, dataSource);
+			TransactionSynchronizationManager.unbindResource(dataSource);
+			TransactionSynchronizationManager.clearSynchronization();
 		}
 	}
 	
