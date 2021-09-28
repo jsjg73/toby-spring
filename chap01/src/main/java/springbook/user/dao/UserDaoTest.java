@@ -36,9 +36,9 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp() {
-		user1 = new User("jsjg73", "재성", "123", Level.BASIC, 1, 0);
-		user2 = new User("kjs9373", "김재성", "123", Level.SILVER, 55, 10);
-		user3 = new User("real", "희동이", "345", Level.GOLD, 100, 40);
+		user1 = new User("jsjg73", "재성", "123", Level.BASIC, 1, 0, "mail1");
+		user2 = new User("kjs9373", "김재성", "123", Level.SILVER, 55, 10, "mail2");
+		user3 = new User("real", "희동이", "345", Level.GOLD, 100, 40, "mail3");
 	}
 	@Test
 	public void addAndGet() throws SQLException{
