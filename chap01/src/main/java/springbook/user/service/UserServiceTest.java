@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,12 +30,11 @@ import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserServiceTest {
-	@Autowired
-	UserService userService;
-	@Autowired
-	UserDao dao;
-	@Autowired
-	PlatformTransactionManager transactionManager;
+	@Autowired UserService userService;
+	@Autowired UserDao dao;
+	@Autowired PlatformTransactionManager transactionManager;
+	@Autowired MailSender mailSender; 
+	
 	List<User> users;
 	@Test
 	public void bean() {
@@ -98,6 +98,7 @@ public class UserServiceTest {
 		UserService test = new UserService.TestUserService (users.get(3).getId());
 		test.setUserDao(this.dao);
 		test.setTransactionManager(transactionManager);
+		test.setMailSender(mailSender);
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
 		
