@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +15,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailMessage;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,12 +33,12 @@ import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
+@ContextConfiguration(locations="/t-applicationContext.xml")
 public class UserServiceTest {
 	@Autowired UserService userService;
 	@Autowired UserDao dao;
 	@Autowired PlatformTransactionManager transactionManager;
-	@Autowired MailSender mailSender; 
+	@Autowired MailSender dummyMailSender; 
 	
 	List<User> users;
 	@Test
@@ -53,10 +58,13 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@DirtiesContext // 컨텍스트의 DI설정을 변경하는 테스트라는 것을 명시.
 	public void upgradeLevels() throws Exception{
 		dao.deleteAll();
-		
 		for(User user : users)dao.add(user);
+		
+		MockMailSender mockMailSender = new MockMailSender(); 
+		userService.setMailSender(mockMailSender); // userService의 의존 오프젝트로 주입
 		
 		userService.upgradeLevels();
 		
@@ -65,6 +73,11 @@ public class UserServiceTest {
 		checkLevel(users.get(2), false);
 		checkLevel(users.get(3), true);
 		checkLevel(users.get(4), false);
+		
+		List<String> request = mockMailSender.getRequests();
+		assertThat(request.size(), is(2));
+		assertThat(request.get(0), is(users.get(1).getEmail()));
+		assertThat(request.get(1), is(users.get(3).getEmail()));
 	}
 	private void checkLevel(User user, boolean upgraded) {
 		User userUpdate = dao.get(user.getId());
@@ -98,7 +111,7 @@ public class UserServiceTest {
 		UserService test = new UserService.TestUserService (users.get(3).getId());
 		test.setUserDao(this.dao);
 		test.setTransactionManager(transactionManager);
-		test.setMailSender(mailSender);
+		test.setMailSender(dummyMailSender);
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
 		
@@ -108,5 +121,25 @@ public class UserServiceTest {
 		}catch(TestUserServiceException e) {}
 		
 		checkLevel(users.get(1), false);
+	}
+	
+	// 메일 전송 검증용 목 오브젝트
+	// UserService의 코드가 정상적으로 수행되도록 돕는 역할이 우선
+	// 테스트 대상이 넘겨주는 출력 값을 보관해두는 기능을 추가
+	// 리스트5-57 목 오브젝트로 만든 메일 전송 확인용 클래스
+	static class MockMailSender implements MailSender{
+		private List<String> requests = new ArrayList<String>();
+
+		public List<String> getRequests() {
+			return requests;
+		}
+
+		public void send(SimpleMailMessage simpleMessage) throws MailException {
+			requests.add(simpleMessage.getTo()[0]);
+		}
+
+		public void send(SimpleMailMessage[] simpleMessages) throws MailException {
+		}
+		
 	}
 }
