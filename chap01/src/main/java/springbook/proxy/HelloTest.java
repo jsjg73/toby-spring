@@ -12,5 +12,10 @@ public class HelloTest {
 		assertThat(hello.sayHello("jsjg73"), is("Hello jsjg73"));
 		assertThat(hello.sayHi("jsjg73"), is("Hi jsjg73"));
 		assertThat(hello.sayThankYou("jsjg73"), is("Thank You jsjg73"));
+		
+		Hello proxyHello = new HelloUpperCase(new HelloTarget());
+		assertThat(proxyHello.sayHello("jsjg73"), is("HELLO JSJG73"));
+		assertThat(proxyHello.sayHi("jsjg73"), is("HI JSJG73"));
+		assertThat(proxyHello.sayThankYou("jsjg73"), is("THANK YOU JSJG73"));
 	}
 }
