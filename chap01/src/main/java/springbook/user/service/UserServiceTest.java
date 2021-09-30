@@ -27,15 +27,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
-import springbook.user.service.UserService.TestUserServiceException;
+import springbook.user.service.UserServiceImpl.TestUserServiceException;
 
-import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/t-applicationContext.xml")
 public class UserServiceTest {
-	@Autowired UserService userService;
+	@Autowired UserServiceImpl userService;
 	@Autowired UserDao dao;
 	@Autowired PlatformTransactionManager transactionManager;
 	@Autowired MailSender dummyMailSender; 
@@ -108,9 +108,8 @@ public class UserServiceTest {
 	
 	@Test
 	public void upgradeAllOrNothing()throws Exception {
-		UserService test = new UserService.TestUserService (users.get(3).getId());
+		UserServiceImpl test = new UserServiceImpl.TestUserService (users.get(3).getId());
 		test.setUserDao(this.dao);
-		test.setTransactionManager(transactionManager);
 		test.setMailSender(dummyMailSender);
 		dao.deleteAll();
 		for(User user: users)dao.add(user);

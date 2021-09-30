@@ -15,7 +15,6 @@
 	</bean>
 	<bean id="userService" class="springbook.user.service.UserService">
 		<property name="userDao" ref="userDao"/>
-		<property name="transactionManager" ref="trasactionManager"/>
 		<property name="mailSender" ref="dummyMailSender"/>
 	</bean>
 	<bean id="trasactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
