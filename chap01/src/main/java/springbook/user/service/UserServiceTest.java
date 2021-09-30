@@ -4,19 +4,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailMessage;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
@@ -27,19 +26,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
-import springbook.user.service.UserServiceImpl.TestUserServiceException;
-
-import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/t-applicationContext.xml")
 public class UserServiceTest {
-	@Autowired UserServiceImpl userService;
+	@Autowired UserService userService;
 	@Autowired UserDao dao;
 	@Autowired PlatformTransactionManager transactionManager;
 	@Autowired MailSender dummyMailSender; 
-	
+	@Autowired UserServiceImpl userServiceImpl;
 	List<User> users;
 	@Test
 	public void bean() {
@@ -64,7 +59,7 @@ public class UserServiceTest {
 		for(User user : users)dao.add(user);
 		
 		MockMailSender mockMailSender = new MockMailSender(); 
-		userService.setMailSender(mockMailSender); // userService의 의존 오프젝트로 주입
+		userServiceImpl.setMailSender(mockMailSender); // userService의 의존 오프젝트로 주입
 		
 		userService.upgradeLevels();
 		
@@ -108,20 +103,34 @@ public class UserServiceTest {
 	
 	@Test
 	public void upgradeAllOrNothing()throws Exception {
-		UserServiceImpl test = new UserServiceImpl.TestUserService (users.get(3).getId());
+		UserServiceImpl test = new TestUserService (users.get(3).getId());
 		test.setUserDao(this.dao);
 		test.setMailSender(dummyMailSender);
+		UserServiceTx txUserService = new UserServiceTx();
+		txUserService.setTransactionManager(transactionManager);
+		txUserService.setUserService(test);
+		
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
 		
 		try {
-			test.upgradeLevels();
+			txUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		}catch(TestUserServiceException e) {}
 		
 		checkLevel(users.get(1), false);
 	}
-	
+	static class TestUserService extends UserServiceImpl{
+		private String id;
+		public TestUserService(String id) {
+			this.id= id;
+		}
+		protected void upgradeLevel(User user) {
+			if(user.getId().equals(this.id)) throw new TestUserServiceException();
+			super.upgradeLevel(user);
+		}
+	}
+	static class TestUserServiceException extends RuntimeException{}
 	// 메일 전송 검증용 목 오브젝트
 	// UserService의 코드가 정상적으로 수행되도록 돕는 역할이 우선
 	// 테스트 대상이 넘겨주는 출력 값을 보관해두는 기능을 추가
