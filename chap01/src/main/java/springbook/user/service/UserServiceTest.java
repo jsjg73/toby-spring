@@ -36,10 +36,6 @@ public class UserServiceTest {
 	@Autowired MailSender dummyMailSender; 
 	@Autowired UserServiceImpl userServiceImpl;
 	List<User> users;
-	@Test
-	public void bean() {
-		assertThat(userService, notNullValue());
-	}
 	
 	@Before
 	public void setUp() {
@@ -53,27 +49,33 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	@DirtiesContext // 컨텍스트의 DI설정을 변경하는 테스트라는 것을 명시.
 	public void upgradeLevels() throws Exception{
-		dao.deleteAll();
-		for(User user : users)dao.add(user);
+		UserServiceImpl userServiceImpl = new UserServiceImpl();
+		
+		MockUserDao mockUserDao = new MockUserDao(users);
+		userServiceImpl.setUserDao(mockUserDao);
 		
 		MockMailSender mockMailSender = new MockMailSender(); 
 		userServiceImpl.setMailSender(mockMailSender); // userService의 의존 오프젝트로 주입
 		
-		userService.upgradeLevels();
 		
-		checkLevel(users.get(0), false);
-		checkLevel(users.get(1), true);
-		checkLevel(users.get(2), false);
-		checkLevel(users.get(3), true);
-		checkLevel(users.get(4), false);
+		userServiceImpl.upgradeLevels();
+		
+		List<User> updated = mockUserDao.getUpdated();
+		assertThat(updated.size(), is(2));
+		checkUserAndLevel(updated.get(0), "Harry", Level.SILVER);
+		checkUserAndLevel(updated.get(1), "Ron", Level.GOLD);
 		
 		List<String> request = mockMailSender.getRequests();
 		assertThat(request.size(), is(2));
 		assertThat(request.get(0), is(users.get(1).getEmail()));
 		assertThat(request.get(1), is(users.get(3).getEmail()));
 	}
+	private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+		assertThat(updated.getId(), is(expectedId));
+		assertThat(updated.getLevel(), is(expectedLevel));
+	}
+
 	private void checkLevel(User user, boolean upgraded) {
 		User userUpdate = dao.get(user.getId());
 		if(upgraded) {
@@ -131,6 +133,7 @@ public class UserServiceTest {
 		}
 	}
 	static class TestUserServiceException extends RuntimeException{}
+	
 	// 메일 전송 검증용 목 오브젝트
 	// UserService의 코드가 정상적으로 수행되도록 돕는 역할이 우선
 	// 테스트 대상이 넘겨주는 출력 값을 보관해두는 기능을 추가
@@ -149,5 +152,32 @@ public class UserServiceTest {
 		public void send(SimpleMailMessage[] simpleMessages) throws MailException {
 		}
 		
+	}
+	
+	static class MockUserDao implements UserDao{
+		private List<User> users;
+		private List<User> updated=new ArrayList<User>();
+		
+		public MockUserDao(List<User> users) {
+			this.users = users;
+		}
+		
+		public List<User> getUpdated() {
+			return updated;
+		}
+
+		public List<User> getAll() {
+			return this.users;
+		}
+
+
+		public void update(User user) {
+			updated.add(user);
+		}
+		
+		public void add(User user) {throw new UnsupportedOperationException();}
+		public User get(String id) {throw new UnsupportedOperationException();}
+		public void deleteAll() {throw new UnsupportedOperationException();}
+		public int getCount() {throw new UnsupportedOperationException();}
 	}
 }
