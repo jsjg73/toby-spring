@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,9 +115,13 @@ public class UserServiceTest {
 		UserServiceImpl test = new TestUserService (users.get(3).getId());
 		test.setUserDao(this.dao);
 		test.setMailSender(dummyMailSender);
-		UserServiceTx txUserService = new UserServiceTx();
-		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(test);
+		
+		TransactionHandler txHandler = new TransactionHandler();
+		txHandler.setTarget(test);
+		txHandler.setTransactionManager(transactionManager);
+		txHandler.setPattern("upgradeLevels");
+		UserService txUserService = (UserService)Proxy.newProxyInstance(
+				getClass().getClassLoader(), new Class[] {UserService.class}, txHandler);
 		
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
