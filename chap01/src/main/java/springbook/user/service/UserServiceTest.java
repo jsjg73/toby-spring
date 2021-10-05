@@ -21,7 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -37,6 +39,7 @@ import springbook.user.domain.User;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/t-applicationContext.xml")
 public class UserServiceTest {
+	@Autowired ApplicationContext context;
 	@Autowired UserService userService;
 	@Autowired UserDao dao;
 	@Autowired PlatformTransactionManager transactionManager;
@@ -111,17 +114,15 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@DirtiesContext
 	public void upgradeAllOrNothing()throws Exception {
 		UserServiceImpl test = new TestUserService (users.get(3).getId());
 		test.setUserDao(this.dao);
 		test.setMailSender(dummyMailSender);
 		
-		TransactionHandler txHandler = new TransactionHandler();
-		txHandler.setTarget(test);
-		txHandler.setTransactionManager(transactionManager);
-		txHandler.setPattern("upgradeLevels");
-		UserService txUserService = (UserService)Proxy.newProxyInstance(
-				getClass().getClassLoader(), new Class[] {UserService.class}, txHandler);
+		TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+		txProxyFactoryBean.setTarget(test);
+		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 		
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
