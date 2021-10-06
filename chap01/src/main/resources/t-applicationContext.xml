@@ -13,12 +13,6 @@
 	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
-	<!-- <bean id="userService" class="springbook.user.service.TxProxyFactoryBean">
-		<property name="target" ref="userServiceImpl"/>
-		<property name="transactionManager" ref="trasactionManager"/>
-		<property name="pattern" value="upgradeLevels"/>
-		<property name="serviceInterface" value="springbook.user.service.UserService"/>
-	</bean> -->
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao"/>
 		<property name="mailSender" ref="dummyMailSender"/>
@@ -30,10 +24,6 @@
 		<property name="host" value="mail.server.com"/>
 	</bean>
 	<bean id="dummyMailSender" class="springbook.user.service.DummyMailSender"/>
-	
-	<!-- <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
-		<property name="mappedName" value="upgrade*"/>
-	</bean> -->
 	
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 	<bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
