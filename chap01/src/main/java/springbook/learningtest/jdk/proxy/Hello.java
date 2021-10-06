@@ -1,4 +1,4 @@
-package springbook.proxy;
+package springbook.learningtest.jdk.proxy;
 
 public interface Hello {
 	String sayHello(String name);

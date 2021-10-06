@@ -1,4 +1,4 @@
-package springbook.proxy;
+package springbook.learningtest.jdk.proxy;
 
 public class HelloTarget implements Hello{
 
