@@ -39,10 +39,10 @@ import springbook.user.domain.User;
 public class UserServiceTest {
 	@Autowired ApplicationContext context;
 	@Autowired UserService userService;
+	@Autowired UserService testUserService;
 	@Autowired UserDao dao;
 	@Autowired PlatformTransactionManager transactionManager;
 	@Autowired MailSender dummyMailSender; 
-	@Autowired UserServiceImpl userServiceImpl;
 	List<User> users;
 	
 	@Before
@@ -112,31 +112,19 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	@DirtiesContext
 	public void upgradeAllOrNothing()throws Exception {
-		UserServiceImpl test = new TestUserService (users.get(3).getId());
-		test.setUserDao(this.dao);
-		test.setMailSender(dummyMailSender);
-		
-		ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-		txProxyFactoryBean.setTarget(test);
-		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-		
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
 		
 		try {
-			txUserService.upgradeLevels();
+			testUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		}catch(TestUserServiceException e) {}
 		
 		checkLevel(users.get(1), false);
 	}
-	static class TestUserService extends UserServiceImpl{
-		private String id;
-		public TestUserService(String id) {
-			this.id= id;
-		}
+	static class TestUserServiceImpl extends UserServiceImpl{
+		private String id ="Ron";
 		protected void upgradeLevel(User user) {
 			if(user.getId().equals(this.id)) throw new TestUserServiceException();
 			super.upgradeLevel(user);
