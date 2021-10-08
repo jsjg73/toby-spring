@@ -31,11 +31,6 @@
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 	<bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
 		<property name="advice" ref="transactionAdvice"/>
-		<property name="pointcut" ref="transactionPointcut"/>
-	</bean>
-	<bean id="transactionPointcut" class="springbook.user.service.NameMatchClassMethodPointcut">
-		<property name="mappedClassName" value="*ServiceImpl"/>
-		<property name="mappedName" value="upgrade*"/>
 	</bean>
 	<bean id="transactionAdvice" class="springbook.user.service.TransactionAdvice">
 		<property name="transactionManager" ref="trasactionManager"/>
