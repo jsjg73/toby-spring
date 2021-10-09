@@ -123,11 +123,19 @@ public class UserServiceTest {
 		
 		checkLevel(users.get(1), false);
 	}
-	static class TestUserServiceImpl extends UserServiceImpl{
+	static class TestUserService extends UserServiceImpl{
 		private String id ="Ron";
 		protected void upgradeLevel(User user) {
 			if(user.getId().equals(this.id)) throw new TestUserServiceException();
 			super.upgradeLevel(user);
+		}
+		
+		@Override
+		public List<User> getAll() {
+			for(User user : super.getAll()) {
+				super.update(user);
+			}
+			return null;
 		}
 	}
 	static class TestUserServiceException extends RuntimeException{}
@@ -204,5 +212,10 @@ public class UserServiceTest {
 		List<SimpleMailMessage> mailMessages = mailMessageArg.getAllValues();
 		assertThat(mailMessages.get(0).getTo()[0], is(users.get(1).getEmail()));
 		assertThat(mailMessages.get(1).getTo()[0], is(users.get(3).getEmail()));
+	}
+	
+	@Test
+	public void readOnlyTransactionAtrribute() {
+		testUserService.getAll();
 	}
 }
