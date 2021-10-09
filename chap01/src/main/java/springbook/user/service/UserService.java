@@ -1,11 +1,16 @@
 package springbook.user.service;
 
+import java.util.List;
+
 import springbook.user.domain.User;
 
 public interface UserService {
 
-	void upgradeLevels();
-
-	void add(User user);
+	public void upgradeLevels();
+	public User get(String id) ;
+	public List<User> getAll();
+	public void deleteAll() ;
+	public void update(User user);
+	public void add(User user);
 
 }
