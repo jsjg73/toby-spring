@@ -233,4 +233,16 @@ public class UserServiceTest {
 		
 		transactionManager.commit(txStatus);
 	}
+	@Test(expected = TransientDataAccessResourceException.class)
+	public void transactionSyncFail() {
+		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+		txDefinition.setReadOnly(true);
+		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+		userService.deleteAll();
+		
+		userService.add(users.get(0));
+		userService.add(users.get(1));
+		
+		transactionManager.commit(txStatus);
+	}
 }
