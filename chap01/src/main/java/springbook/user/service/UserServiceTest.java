@@ -222,27 +222,45 @@ public class UserServiceTest {
 		testUserService.getAll();
 	}
 	
+//	@Test
+//	public void transactionSync() {
+//		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//		userService.deleteAll();
+//		
+//		userService.add(users.get(0));
+//		userService.add(users.get(1));
+//		
+//		transactionManager.commit(txStatus);
+//	}
+//	@Test(expected = TransientDataAccessResourceException.class)
+//	public void transactionSyncFail() {
+//		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//		txDefinition.setReadOnly(true);
+//		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//		userService.deleteAll();
+//		
+//		userService.add(users.get(0));
+//		userService.add(users.get(1));
+//		
+//		transactionManager.commit(txStatus);
+//		txStatus.
+//	}
+//	
 	@Test
-	public void transactionSync() {
+	public void transactionSyncRollback() {
+		userService.deleteAll();
+		assertThat(dao.getCount(), is(0));
+		
 		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		userService.deleteAll();
 		
 		userService.add(users.get(0));
 		userService.add(users.get(1));
+		assertThat(dao.getCount(), is(2));
 		
-		transactionManager.commit(txStatus);
-	}
-	@Test(expected = TransientDataAccessResourceException.class)
-	public void transactionSyncFail() {
-		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-		txDefinition.setReadOnly(true);
-		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		userService.deleteAll();
+		transactionManager.rollback(txStatus);
 		
-		userService.add(users.get(0));
-		userService.add(users.get(1));
-		
-		transactionManager.commit(txStatus);
+		assertThat(dao.getCount(), is(0));
 	}
 }
