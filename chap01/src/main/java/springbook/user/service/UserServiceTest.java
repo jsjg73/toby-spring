@@ -33,8 +33,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -44,6 +46,8 @@ import springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/t-applicationContext.xml")
+@Transactional
+@TransactionConfiguration(defaultRollback = false)
 public class UserServiceTest {
 	@Autowired ApplicationContext context;
 	@Autowired UserService userService;
@@ -66,6 +70,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@Transactional(propagation = Propagation.NEVER)
 	public void upgradeLevels() throws Exception{
 		UserServiceImpl userServiceImpl = new UserServiceImpl();
 		
@@ -103,6 +108,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@Rollback
 	public void add() {
 		dao.deleteAll();
 		
@@ -121,6 +127,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@Transactional(propagation = Propagation.NEVER)
 	public void upgradeAllOrNothing()throws Exception {
 		dao.deleteAll();
 		for(User user: users)dao.add(user);
@@ -197,6 +204,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@Transactional(propagation = Propagation.NEVER)
 	public void mockUpgradeLevels() throws Exception{
 		UserServiceImpl userServiceImpl = new UserServiceImpl();
 		
@@ -224,51 +232,18 @@ public class UserServiceTest {
 	}
 	
 	@Test(expected = TransientDataAccessResourceException.class)
+	@Transactional(readOnly = true)
+	@Rollback
 	public void readOnlyTransactionAtrribute() {
 		testUserService.getAll();
 	}
 	
 	@Test
-	@Transactional
 	@Rollback(false)
 	public void transactionSync() {
-//		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-//		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 		userService.deleteAll();
 		userService.add(users.get(0));
 		userService.add(users.get(1));
-		
-//		transactionManager.commit(txStatus);
 	}
 	
-//	@Test(expected = TransientDataAccessResourceException.class)
-//	public void transactionSyncFail() {
-//		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-//		txDefinition.setReadOnly(true);
-//		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-//		userService.deleteAll();
-//		
-//		userService.add(users.get(0));
-//		userService.add(users.get(1));
-//		
-//		transactionManager.commit(txStatus);
-//		txStatus.
-//	}
-//	
-//	@Test
-//	public void transactionSyncRollback() {
-//		userService.deleteAll();
-//		assertThat(dao.getCount(), is(0));
-//		PlatformTransactionManager txMgr = new DataSourceTransactionManager(dataSource);
-//		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-//		TransactionStatus txStatus = txMgr.getTransaction(txDefinition);
-//		
-//		userService.add(users.get(0));
-//		userService.add(users.get(1));
-//		assertThat(dao.getCount(), is(2));
-//		
-//		txMgr.rollback(txStatus);
-//		
-//		assertThat(dao.getCount(), is(0));
-//	}
 }
