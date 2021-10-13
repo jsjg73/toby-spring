@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +25,17 @@ import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import springbook.user.dao.UserDao;
@@ -46,6 +51,7 @@ public class UserServiceTest {
 	@Autowired UserDao dao;
 	@Autowired PlatformTransactionManager transactionManager;
 	@Autowired MailSender dummyMailSender; 
+	@Autowired DataSource dataSource;
 	List<User> users;
 	
 	@Before
@@ -222,17 +228,19 @@ public class UserServiceTest {
 		testUserService.getAll();
 	}
 	
-//	@Test
-//	public void transactionSync() {
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void transactionSync() {
 //		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
 //		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-//		userService.deleteAll();
-//		
-//		userService.add(users.get(0));
-//		userService.add(users.get(1));
-//		
+		userService.deleteAll();
+		userService.add(users.get(0));
+		userService.add(users.get(1));
+		
 //		transactionManager.commit(txStatus);
-//	}
+	}
+	
 //	@Test(expected = TransientDataAccessResourceException.class)
 //	public void transactionSyncFail() {
 //		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
@@ -247,20 +255,20 @@ public class UserServiceTest {
 //		txStatus.
 //	}
 //	
-	@Test
-	public void transactionSyncRollback() {
-		userService.deleteAll();
-		assertThat(dao.getCount(), is(0));
-		
-		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		
-		userService.add(users.get(0));
-		userService.add(users.get(1));
-		assertThat(dao.getCount(), is(2));
-		
-		transactionManager.rollback(txStatus);
-		
-		assertThat(dao.getCount(), is(0));
-	}
+//	@Test
+//	public void transactionSyncRollback() {
+//		userService.deleteAll();
+//		assertThat(dao.getCount(), is(0));
+//		PlatformTransactionManager txMgr = new DataSourceTransactionManager(dataSource);
+//		DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//		TransactionStatus txStatus = txMgr.getTransaction(txDefinition);
+//		
+//		userService.add(users.get(0));
+//		userService.add(users.get(1));
+//		assertThat(dao.getCount(), is(2));
+//		
+//		txMgr.rollback(txStatus);
+//		
+//		assertThat(dao.getCount(), is(0));
+//	}
 }
