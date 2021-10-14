@@ -3,7 +3,10 @@ package springbook.user.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+
 import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -11,6 +14,13 @@ import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 public class UserDaoJdbc implements UserDao {
+	
+	private Map<String, String> sqlMap;
+	
+	public void setSqlMap(Map<String, String> sqlMap) {
+		this.sqlMap = sqlMap;
+	}
+
 	// 리스트 3-56 재사용 가능하도록 독립시킨 RowMapper
 	private RowMapper<User> userMapper = new RowMapper<User>() {
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -32,30 +42,36 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	public void add(final User user) {
-		this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)", 
-				user.getId(),user.getName(),user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(),user.getEmail());
+		//""
+		this.jdbcTemplate.update(this.sqlMap.get("add"), 
+				user.getId(),user.getName(),user.getPassword(), 
+				user.getLevel().intValue(), user.getLogin(),
+				user.getRecommend(),user.getEmail());
 	}
 
 	public User get(String id) {
-		return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+		return this.jdbcTemplate.queryForObject(
+				sqlMap.get("get"),
 				new Object[] {id}, this.userMapper);
 	}
 
 	public void deleteAll() {
-		this.jdbcTemplate.update("delete from users");
+		this.jdbcTemplate.update(sqlMap.get("deleteAll"));
 	}
 
 	public int getCount() {
-		return this.jdbcTemplate.queryForInt("select count(*) from users");
+		return this.jdbcTemplate.queryForInt(sqlMap.get("getCount"));
 	}
 	public List<User> getAll(){
-		return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
+		return this.jdbcTemplate.query(sqlMap.get("getAll"), this.userMapper);
 	}
 
 	public void update(User user) {
-		this.jdbcTemplate.update("update users set name=?, password=?, level=?, login=?, recommend=?, email=? where id=?"
-				,user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(),user.getEmail(),
-				user.getId());
+		this.jdbcTemplate.update(
+				sqlMap.get("update"),
+				user.getName(), user.getPassword(), user.getLevel().intValue(), 
+				user.getLogin(), user.getRecommend(),user.getEmail(),user.getId()
+				);
 		
 	}
 }
