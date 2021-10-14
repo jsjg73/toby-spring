@@ -17,17 +17,13 @@ import springbook.user.sqlservice.SqlService;
 public class UserDaoJdbc implements UserDao {
 	
 	private SqlService sqlService;
-	private Map<String, String> sqlMap;
+	
 	private JdbcTemplate jdbcTemplate;
 	
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-	public void setSqlMap(Map<String, String> sqlMap) {
-		this.sqlMap = sqlMap;
-	}
-
 	public void setSqlService(SqlService sqlService) {
 		this.sqlService = sqlService;
 	}
@@ -60,6 +56,10 @@ public class UserDaoJdbc implements UserDao {
 				this.sqlService.getSql("userGet"),
 				new Object[] {id}, this.userMapper);
 	}
+	
+	public List<User> getAll(){
+		return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"), this.userMapper);
+	}
 
 	public void deleteAll() {
 		this.jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
@@ -67,9 +67,6 @@ public class UserDaoJdbc implements UserDao {
 
 	public int getCount() {
 		return this.jdbcTemplate.queryForInt(this.sqlService.getSql("userGetCount"));
-	}
-	public List<User> getAll(){
-		return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"), this.userMapper);
 	}
 
 	public void update(User user) {
