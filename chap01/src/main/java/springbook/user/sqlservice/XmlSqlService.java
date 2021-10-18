@@ -2,7 +2,6 @@ package springbook.user.sqlservice;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,17 +12,21 @@ import springbook.user.sqlservice.jaxb.SqlType;
 import springbook.user.sqlservice.jaxb.Sqlmap;
 
 public class XmlSqlService implements SqlService {
-	
 	Map<String, String> sqlMap = new HashMap<String, String>();
+	private String sqlmapFile;
+
+	public void setSqlmapFile(String sqlmapFile) {
+		this.sqlmapFile = sqlmapFile;
+	}
 	
-	public XmlSqlService() {
+	public void loadSql() {
 		String contextPath = Sqlmap.class.getPackage().getName();
 		try {
 			
 			JAXBContext context =  JAXBContext.newInstance(contextPath);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			
-			Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(UserDao.class.getResourceAsStream("sqlmap.xml"));
+			Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(UserDao.class.getResourceAsStream(this.sqlmapFile));
 			
 			for(SqlType sql : sqlmap.getSql()) {
 				sqlMap.put(sql.getKey(), sql.getValue());
@@ -32,7 +35,7 @@ public class XmlSqlService implements SqlService {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public String getSql(String key) throws SqlRetrievalFailureException {
 		String sql = sqlMap.get(key);
 		if(sql == null)
