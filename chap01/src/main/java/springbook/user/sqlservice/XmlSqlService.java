@@ -3,6 +3,7 @@ package springbook.user.sqlservice;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -19,6 +20,7 @@ public class XmlSqlService implements SqlService {
 		this.sqlmapFile = sqlmapFile;
 	}
 	
+	@PostConstruct
 	public void loadSql() {
 		String contextPath = Sqlmap.class.getPackage().getName();
 		try {
