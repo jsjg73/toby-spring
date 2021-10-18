@@ -15,11 +15,21 @@ import springbook.user.sqlservice.jaxb.Sqlmap;
 public class XmlSqlService implements SqlService {
 	Map<String, String> sqlMap = new HashMap<String, String>();
 	private String sqlmapFile;
-
+	private SqlRegistry sqlRegistry;
+	private SqlReader sqlReader;
+	
 	public void setSqlmapFile(String sqlmapFile) {
 		this.sqlmapFile = sqlmapFile;
 	}
 	
+	public void setSqlRegistry(SqlRegistry sqlRegistry) {
+		this.sqlRegistry = sqlRegistry;
+	}
+
+	public void setSqlReader(SqlReader sqlReader) {
+		this.sqlReader = sqlReader;
+	}
+
 	@PostConstruct
 	public void loadSql() {
 		String contextPath = Sqlmap.class.getPackage().getName();
