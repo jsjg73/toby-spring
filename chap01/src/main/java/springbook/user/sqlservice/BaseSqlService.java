@@ -14,8 +14,17 @@ public class BaseSqlService implements SqlService {
 		this.sqlReader = sqlReader;
 	}
 	
+	public SqlRegistry getSqlRegistry() {
+		return sqlRegistry;
+	}
+
+	public SqlReader getSqlReader() {
+		return sqlReader;
+	}
+
 	@PostConstruct
 	public void loadSql() {
+		System.out.println("baseSqlservice postconstruct");
 		this.sqlReader.read(this.sqlRegistry);
 	}
 	@Override
