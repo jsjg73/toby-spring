@@ -24,7 +24,6 @@ public class BaseSqlService implements SqlService {
 
 	@PostConstruct
 	public void loadSql() {
-		System.out.println("baseSqlservice postconstruct");
 		this.sqlReader.read(this.sqlRegistry);
 	}
 	@Override
