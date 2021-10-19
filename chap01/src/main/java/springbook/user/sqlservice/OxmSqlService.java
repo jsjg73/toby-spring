@@ -14,6 +14,8 @@ import springbook.user.sqlservice.jaxb.Sqlmap;
 
 public class OxmSqlService implements SqlService {
 	private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
+	private final BaseSqlService baseSqlService = new BaseSqlService();
+	
 	private SqlRegistry sqlRegistry = new HashMapSqlRegistry();
 
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
@@ -30,12 +32,15 @@ public class OxmSqlService implements SqlService {
 
 	@PostConstruct
 	public void loadSql() {
-		this.oxmSqlReader.read(sqlRegistry);
+		baseSqlService.setSqlReader(oxmSqlReader);
+		baseSqlService.setSqlRegistry(sqlRegistry);
+		
+		baseSqlService.loadSql();
 	}
 
 	@Override
 	public String getSql(String key) throws SqlRetrievalFailureException {
-		return sqlRegistry.findsql(key);
+		return this.baseSqlService.getSql(key);
 	}
 
 	private class OxmSqlReader implements SqlReader {
