@@ -30,10 +30,6 @@
 	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="contextPath" value="springbook.user.sqlservice.jaxb"/>
 	</bean>
-	<bean id="sqlRegistry" class="springbook.user.sqlservice.HashMapSqlRegistry"/>
-	<bean id="sqlReader" class="springbook.user.sqlservice.JaxbXmlSqlReader">
-		<property name="sqlmapFile" value="sqlmap.xml"/>
-	</bean>
 	
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao"/>
