@@ -6,9 +6,9 @@
 	<artifactId>chap01</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-	    <maven.compiler.source>1.6</maven.compiler.source>
-	    <maven.compiler.target>1.6</maven.compiler.target>
-  </properties>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+	</properties>
 	<repositories>
 		<repository>
 			<id>com.springsource.repository.bundles.release</id>
@@ -102,5 +102,12 @@
 			<artifactId>org.springframework.oxm</artifactId>
 			<version>3.0.7.RELEASE</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.castor/com.springsource.org.castor -->
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>com.springsource.org.castor</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+
 	</dependencies>
 </project>
