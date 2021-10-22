@@ -1,63 +1,12 @@
 package springbook.user.sqlservice.updatable;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import springbook.issutracker.sqlservice.SqlUpdateFailureException;
+import springbook.issutracker.sqlservice.AbstractUpdatableSqlRegistryTest;
 import springbook.issutracker.sqlservice.UpdatableSqlRegistry;
-import springbook.user.sqlservice.SqlNotFoundException;
 
-public class ConcurrentHashMapsqlregistryTest {
-	UpdatableSqlRegistry sqlRegistry;
-	@Before
-	public void setUp() {
-		sqlRegistry = new ConcurrentHashMapSqlRegistry();
-		sqlRegistry.registerSql("KEY1", "SQL1");
-		sqlRegistry.registerSql("KEY2", "SQL2");
-		sqlRegistry.registerSql("KEY3", "SQL3");
-		
-	}
-	
-	@Test
-	public void find() {
-		checkFindResult("SQL1","SQL2","SQL3");
-	}
+public class ConcurrentHashMapsqlregistryTest extends AbstractUpdatableSqlRegistryTest{
 
-	private void checkFindResult(String expected1, String expected2, String expected3) {
-		assertThat(sqlRegistry.findsql("KEY1"), is(expected1));
-		assertThat(sqlRegistry.findsql("KEY2"), is(expected2));
-		assertThat(sqlRegistry.findsql("KEY3"), is(expected3));
-	}
-	
-	@Test(expected = SqlNotFoundException.class)
-	public void unkownKey() {
-		sqlRegistry.findsql("SLQ999!$!");
-	}
-	
-	@Test
-	public void updateSingle() {
-		sqlRegistry.updateSql("KEY2", "Modified2");
-		checkFindResult("SQL1","Modified2","SQL3");
-	}
-	
-	@Test
-	public void updateMulti() {
-		Map<String, String> sqlmap = new HashMap<String, String>();
-		sqlmap.put("KEY1", "Modi1");
-		sqlmap.put("KEY3", "Modi3");
-		
-		sqlRegistry.updateSql(sqlmap);
-		checkFindResult("Modi1", "SQL2", "Modi3");
-	}
-	
-	@Test(expected=SqlUpdateFailureException.class)
-	public void updateWithNotExistingKey() {
-		sqlRegistry.updateSql("SLQ9999", "Modi2");
+	@Override
+	protected UpdatableSqlRegistry createUpdatableSqlRegistry() {
+		return new ConcurrentHashMapSqlRegistry();
 	}
 }
