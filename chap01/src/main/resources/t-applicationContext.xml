@@ -25,7 +25,7 @@
 	</bean>
 	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="sqlService" ref="sqlService"/>		
+		<property name="sqlService" ref="embeddedSqlRegistry"/>		
 	</bean>
 	<bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
 		<property name="unmarshaller" ref="unmarshaller"/>
@@ -36,6 +36,10 @@
 	</bean>
 	<bean id="sqlRegistry" class = "springbook.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>
 	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="database"/>
+	</bean>
+	
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao"/>
 		<property name="mailSender" ref="dummyMailSender"/>
@@ -43,9 +47,6 @@
 	<bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService"
 		parent="userService"/>
 	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"/>
-	</bean>
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="mail.server.com"/>
 	</bean>
@@ -65,6 +66,10 @@
 	</tx:advice>
 	
 	<jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-		<jdbc:script location="classpath:schema.sql"/>
+		<jdbc:script location="classpath:springbook/user/sqlservice/updatable/sqlRegistrySchema.sql"/>
 	</jdbc:embedded-database>
+	<bean id= "embeddedSqlRegistry" class="springbook.issutracker.sqlservice.EmbeddedDbSqlRegistry">
+		<property name="dataSource" ref="embeddedDatabase"/>
+	</bean>
+	
 </beans>
