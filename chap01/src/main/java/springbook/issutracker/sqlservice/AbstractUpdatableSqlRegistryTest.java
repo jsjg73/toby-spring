@@ -14,7 +14,7 @@ import springbook.issutracker.sqlservice.UpdatableSqlRegistry;
 import springbook.user.sqlservice.SqlNotFoundException;
 
 public abstract class AbstractUpdatableSqlRegistryTest {
-	UpdatableSqlRegistry sqlRegistry;
+	protected UpdatableSqlRegistry sqlRegistry;
 
 	@Before
 	public void setUp() {
