@@ -40,12 +40,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import springbook.user.configuration.TestApplicationContext;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/t-applicationContext.xml")
+@ContextConfiguration(classes=TestApplicationContext.class)
 @Transactional
 @TransactionConfiguration(defaultRollback = false)
 public class UserServiceTest {

@@ -23,19 +23,6 @@
 		<property name="username" value="jsjg73"/>
 		<property name="password" value="jsjg73"/>
 	</bean>
-	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="sqlService" ref="sqlService"/>		
-	</bean>
-	<bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
-		<property name="unmarshaller" ref="unmarshaller"/>
-		<property name="sqlRegistry" ref="embeddedSqlRegistry"/>
-	</bean>
-	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-		<property name="contextPath" value="springbook.user.sqlservice.jaxb"/>
-	</bean>
-	<bean id="sqlRegistry" class = "springbook.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>
-	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
@@ -61,11 +48,23 @@
 		</tx:attributes>
 	</tx:advice>
 	
+	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
+	<property name="dataSource" ref="dataSource"/>
+		<property name="sqlService" ref="sqlService"/>		
+	</bean>
+	<bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
+		<property name="unmarshaller" ref="unmarshaller"/>
+		<property name="sqlRegistry" ref="embeddedSqlRegistry"/>
+	</bean>
+	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath" value="springbook.user.sqlservice.jaxb"/>
+	</bean>
+	<bean id="sqlRegistry" class = "springbook.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>
+	
 	<jdbc:embedded-database id="embeddedDatabase" type="HSQL">
 		<jdbc:script location="classpath:springbook/user/sqlservice/updatable/sqlRegistrySchema.sql"/>
 	</jdbc:embedded-database>
 	<bean id= "embeddedSqlRegistry" class="springbook.issutracker.sqlservice.EmbeddedDbSqlRegistry">
 		<property name="dataSource" ref="embeddedDatabase"/>
 	</bean>
-	
 </beans>
