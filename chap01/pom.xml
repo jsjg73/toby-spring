@@ -8,6 +8,7 @@
 	<properties>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+		<spring.version>3.1.2.RELEASE</spring.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -27,24 +28,29 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context</artifactId>
-			<version>3.0.7.RELEASE</version>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.aspects</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.jdbc</artifactId>
-			<version>3.0.7.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.test</artifactId>
-			<version>3.0.7.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjtools</artifactId>
 			<version>1.6.6</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.cglib/com.springsource.net.sf.cglib -->
 		<dependency>
@@ -82,7 +88,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context.support</artifactId>
-			<version>3.0.7.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
@@ -100,7 +106,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.oxm</artifactId>
-			<version>3.0.7.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.codehaus.castor/com.springsource.org.castor -->
 		<dependency>
