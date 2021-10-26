@@ -25,11 +25,11 @@
 	</bean>
 	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource"/>
-		<property name="sqlService" ref="embeddedSqlRegistry"/>		
+		<property name="sqlService" ref="sqlService"/>		
 	</bean>
 	<bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
 		<property name="unmarshaller" ref="unmarshaller"/>
-		<property name="sqlRegistry" ref="sqlRegistry"/>
+		<property name="sqlRegistry" ref="embeddedSqlRegistry"/>
 	</bean>
 	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="contextPath" value="springbook.user.sqlservice.jaxb"/>
@@ -37,7 +37,7 @@
 	<bean id="sqlRegistry" class = "springbook.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>
 	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="database"/>
+		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
@@ -46,10 +46,6 @@
 	</bean>
 	<bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService"
 		parent="userService"/>
-	
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="mail.server.com"/>
-	</bean>
 	<bean id="dummyMailSender" class="springbook.user.service.DummyMailSender"/>
 	
 	<aop:config>
