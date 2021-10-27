@@ -140,7 +140,7 @@ public class UserServiceTest {
 		
 		checkLevel(users.get(1), false);
 	}
-	static class TestUserService extends UserServiceImpl{
+	public static class TestUserService extends UserServiceImpl{
 		private String id ="Ron";
 		protected void upgradeLevel(User user) {
 			if(user.getId().equals(this.id)) throw new TestUserServiceException();
