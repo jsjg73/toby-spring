@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -16,18 +17,16 @@ import springbook.user.sqlservice.SqlService;
 
 public class UserDaoJdbc implements UserDao {
 	
+	@Autowired
 	private SqlService sqlService;
 	
 	private JdbcTemplate jdbcTemplate;
 	
+	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-	public void setSqlService(SqlService sqlService) {
-		this.sqlService = sqlService;
-	}
-
 	// 리스트 3-56 재사용 가능하도록 독립시킨 RowMapper
 	private RowMapper<User> userMapper = new RowMapper<User>() {
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
