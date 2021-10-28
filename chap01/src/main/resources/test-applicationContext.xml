@@ -18,13 +18,8 @@
     <!--  db -->
 	
 	<!-- sql service -->
-	
-	<jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-		<jdbc:script location="classpath:springbook/user/sqlservice/updatable/sqlRegistrySchema.sql"/>
-	</jdbc:embedded-database>
-	
+
 	<!-- aop -->
-    <tx:annotation-driven/>
     
     <!-- application components -->
 	
