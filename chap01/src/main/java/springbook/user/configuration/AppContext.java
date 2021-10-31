@@ -33,7 +33,7 @@ import springbook.user.sqlservice.SqlService;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")
-public class TestApplicationContext {
+public class AppContext {
 	@Autowired UserDao userDao;
 	
 	/*
