@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -35,7 +36,7 @@ import springbook.user.sqlservice.SqlService;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")
-@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class})
+@Import(SqlServiceContext.class)
 public class AppContext {
 	@Autowired UserDao userDao;
 	
@@ -60,5 +61,28 @@ public class AppContext {
 		tm.setDataSource(dataSource());
 		return tm;
 	}
+	@Configuration
+	@Profile("test")
+	public static class TestAppContext {
+		@Bean
+		public UserService testUserService() {
+			TestUserService testService = new TestUserService();
+			return testService; 
+		}
+		@Bean
+		public MailSender mailSender() {
+			return new DummyMailSender();
+		}
+	}
 	
+	@Configuration
+	@Profile("production")
+	public static class ProductionAppContext {
+		@Bean
+		public MailSender mailSender() {
+			JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+			mailSender.setHost("mail.mycompany.com");
+			return mailSender;
+		}
+	}
 }
