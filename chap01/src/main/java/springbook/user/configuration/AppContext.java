@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -33,6 +34,7 @@ import springbook.user.sqlservice.SqlService;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")
+@Import(SqlServiceContext.class)
 public class AppContext {
 	@Autowired UserDao userDao;
 	
@@ -56,58 +58,5 @@ public class AppContext {
 		DataSourceTransactionManager tm = new DataSourceTransactionManager();
 		tm.setDataSource(dataSource());
 		return tm;
-	}
-	
-	/*
-	 * 애플리케이션 로직 & 테스트
-	 * */
-	
-	@Bean
-	public UserService testUserService() {
-		TestUserService testService = new TestUserService();
-		testService.setUserDao(this.userDao);
-		testService.setMailSender(mailSender());
-		return testService; 
-	}
-	@Bean
-	public MailSender mailSender() {
-		return new DummyMailSender();
-	}
-	
-	/***
-	 * SQL 서비스 
-	 */
-	@Bean
-	public SqlService sqlService() {
-		OxmSqlService oss = new OxmSqlService();
-		oss.setUnmarshaller(unmarshaller());
-		oss.setSqlRegistry(sqlRegistry());
-
-		return oss;
-	}
-	
-	@Bean
-	public SqlRegistry sqlRegistry() {
-		EmbeddedDbSqlRegistry sqlRegistry = new EmbeddedDbSqlRegistry();
-		sqlRegistry.setDataSource(embeddedDatabase());
-		return sqlRegistry;
-	}
-	
-	@Bean
-	public DataSource embeddedDatabase() {
-		return new EmbeddedDatabaseBuilder()
-						.setName("embeddedDatabase")
-						.setType(EmbeddedDatabaseType.HSQL)
-						.addScript(
-								"classpath:/springbook/user/sqlservice/updatable/sqlRegistrySchema.sql"
-								)
-						.build();
-	}
-	
-	@Bean
-	public Unmarshaller unmarshaller() {
-		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-		marshaller.setContextPath("springbook.user.sqlservice.jaxb");
-		return marshaller;
 	}
 }
