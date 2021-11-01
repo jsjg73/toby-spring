@@ -85,5 +85,8 @@ public class AppContext {
 		}
 	}
 	
-	
+	@Bean
+	public SqlMapConfig sqlMapConfig() {
+		return new UserSqlMapConfig();
+	}
 }
